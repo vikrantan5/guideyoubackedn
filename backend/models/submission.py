@@ -3,18 +3,18 @@ from typing import Optional
 from datetime import datetime, timezone
 import uuid
 
-class SubmissionBase(BaseModel):
+class SubmissionCreate(BaseModel):
     task_id: str
-    content: str  # Could be text, base64 image, or URL
-    submission_type: str  # "image", "text", "video", "link"
+    content: Optional[str] = None
+    submission_type: Optional[str] = None
 
-class SubmissionCreate(SubmissionBase):
-    pass
-
-class Submission(SubmissionBase):
+class Submission(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    task_id: str
     student_id: str
+    content: str = "Task marked as complete"
+    submission_type: str = "text"
     status: str = "pending"  # "pending", "approved", "rejected"
     feedback: Optional[str] = None
     ai_feedback: Optional[str] = None

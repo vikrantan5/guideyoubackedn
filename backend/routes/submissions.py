@@ -44,8 +44,14 @@ async def create_submission(submission: SubmissionCreate, current_user: dict = D
     deadline = datetime.fromisoformat(task['deadline']) if isinstance(task['deadline'], str) else task['deadline']
     is_late = datetime.now(deadline.tzinfo) > deadline
     
+    # Set defaults for simplified submission
+    content = submission.content if submission.content else "Task marked as complete"
+    submission_type = submission.submission_type if submission.submission_type else "text"
+    
     submission_obj = Submission(
-        **submission.model_dump(),
+        task_id=submission.task_id,
+        content=content,
+        submission_type=submission_type,
         student_id=current_user["sub"],
         is_late=is_late
     )
